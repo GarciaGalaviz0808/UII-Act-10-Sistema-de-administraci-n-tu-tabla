@@ -1,0 +1,123 @@
+{% extends "app_usuario/base.html" %}
+
+{% block body %}
+<h3 class="m-4">Todos los Usuarios de Mercado Libre</h3> {# CAMBIADO: Texto #}
+<div class="row">
+  <div class="col-12">
+    {% if usuarios %}
+    <div class="card bg-light ms-4 me-4 mb-4">
+      <div class="card-header">
+        <i class="fa-solid fa-list fa-lg"></i> Registro de Usuarios de Mercado Libre {# CAMBIADO: Texto #}
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Fecha Registro</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>País</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for usuario in usuarios %}
+              <tr>
+                <td>{{ usuario.id_usuario }}</td>
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.apellido }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.fecha_registro|date:"Y-m-d H:i" }}</td>
+                <td>{{ usuario.direccion }}</td>
+                <td>{{ usuario.ciudad }}</td>
+                <td>{{ usuario.pais }}</td>
+                <td>{{ usuario.telefono }}</td>
+                <td>
+                  <!-- Ver usuario -->
+                  <button type="button" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalVer{{usuario.id_usuario}}">
+                    <i class="fa-solid fa-circle-info fa-lg"></i>
+                  </button>
+
+                  <!-- Editar usuario -->
+                  <a class="btn btn-warning me-1" href="{% url 'edit' usuario.id_usuario %}">
+                    <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                  </a>
+
+                  <!-- Eliminar usuario -->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminar{{usuario.id_usuario}}">
+                    <i class="fa-solid fa-trash-can fa-lg"></i>
+                  </button>
+
+                  <!-- Modal Ver -->
+                  <div class="modal fade" id="modalVer{{usuario.id_usuario}}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Usuario de Mercado Libre: {{ usuario.nombre }} {{ usuario.apellido }}</h5> {# CAMBIADO: Texto #}
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <ul class="list-unstyled">
+                            <li>ID: <strong>{{ usuario.id_usuario }}</strong></li>
+                            <li>Nombre: <strong>{{ usuario.nombre }}</strong></li>
+                            <li>Apellido: <strong>{{ usuario.apellido }}</strong></li>
+                            <li>Email: <strong>{{ usuario.email }}</strong></li>
+                            
+                            <li>Fecha Registro: <strong>{{ usuario.fecha_registro|date:"Y-m-d H:i" }}</strong></li>
+                            <li>Dirección: <strong>{{ usuario.direccion }}</strong></li>
+                            <li>Ciudad: <strong>{{ usuario.ciudad }}</strong></li>
+                            <li>País: <strong>{{ usuario.pais }}</strong></li>
+                            <li>Teléfono: <strong>{{ usuario.telefono }}</strong></li>
+                          </ul>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Modal Eliminar -->
+                  <div class="modal fade" id="modalEliminar{{usuario.id_usuario}}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Eliminar Usuario de Mercado Libre: {{ usuario.nombre }} {{ usuario.apellido }}</h5> {# CAMBIADO: Texto #}
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{% url 'delete' usuario.id_usuario %}" method="POST">
+                          {% csrf_token %}
+                          <div class="modal-body">
+                            <p>¿Estás seguro/a de que deseas eliminar este usuario de Mercado Libre?</p> {# CAMBIADO: Texto #}
+                            <p><strong>ID:</strong> {{ usuario.id_usuario }}</p>
+                            <p><strong>Nombre:</strong> {{ usuario.nombre }} {{ usuario.apellido }}</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% else %}
+      <h5 class="alert alert-primary ms-4 me-4">No hay usuarios registrados en Mercado Libre.</h5> {# CAMBIADO: Texto #}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
